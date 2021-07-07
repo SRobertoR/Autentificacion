@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Autenticación</title>
+    <link rel="stylesheet" href="estilos.css">
+    <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.7.0/firebase-auth.js">
+    </script>
+    <script src="js/init.js"></script>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body>
+    <header class="header">
+      <img class="header__img" src="aut.png" alt="Platzi Video">
+    </header>
+
+    <section  class="login">
+      <section class="login__container">
+        <h2>Autenticación</h2>
+        <h2>Sesión</h2>
+        <fieldset>
+          <legend>Email</legend>
+          <output id="email"><progress max="100">Cargando…</progress></output>
+        </fieldset>
+        <fieldset>
+          <legend>Nombre</legend>
+          <output id="nombre"></output>
+        </fieldset>
+        <figure><img id="avatar" alt="Avatar"></figure>
+        <button class="button" type="button" onclick="terminaSesión()">Cerrar Sesión</button>  
+      </section>
+    </section>
+  
+    <footer class="footer">Copyright &copy; 2021 Sixto Roberto Olivares Rivera</footer>
+
+
+    <script>
+      const auth = firebase.auth();
+
+      const provider = new firebase.auth.GoogleAuthProvider();
+
+      provider.setCustomParameters({ prompt: "select_account" });
+
+      auth.onAuthStateChanged(
+
+        usuarioAuth => {
+          if (usuarioAuth && usuarioAuth.email) {
+ 
+            email.value = usuarioAuth.email;
+
+            nombre.value = usuarioAuth.displayName;
+
+            avatar.src = usuarioAuth.photoURL;
+          } else {
+
+            auth.signInWithRedirect(provider);
+          }
+        },
+
+        procesaError
+      );
+
+      async function terminaSesión() {
+        try {
+          await auth.signOut();
+        } catch (e) {
+          procesaError(e);
+        }
+      }
+
+      function procesaError(e) {
+        console.log(e);
+        alert(e.message);
+      }
+    </script>
+  </body>
+</html>
